@@ -1,6 +1,6 @@
 use crate::domain::models::TOTPEntry;
 use crate::domain::repository::TOTPRepository;
-use crate::infrastructure::env::get_required_env_var;
+use crate::infrastructure::config::Config;
 use async_trait::async_trait;
 use aws_config::profile::ProfileFileCredentialsProvider;
 use aws_config::BehaviorVersion;
@@ -13,28 +13,26 @@ pub struct DynamoDBRepository {
 
 impl DynamoDBRepository {
     pub async fn new() -> Result<Self, anyhow::Error> {
-        // .env ファイルを読み込む
-        dotenvy::dotenv().ok();
-
-        // 必須の環境変数をチェック
-        let profile_name = get_required_env_var("AWS_PROFILE")?;
-        let table_name = get_required_env_var("DYNAMODB_TABLE_NAME")?;
+        let config = Config::load()?;
 
         let credentials_provider = ProfileFileCredentialsProvider::builder()
-            .profile_name(&profile_name)
+            .profile_name(&config.aws_profile)
             .build();
 
-        let config = aws_config::defaults(BehaviorVersion::latest())
+        let aws_config = aws_config::defaults(BehaviorVersion::latest())
             .credentials_provider(credentials_provider)
             .load()
             .await;
 
-        let client = Client::new(&config);
+        let client = Client::new(&aws_config);
 
-        // println!("Using AWS profile: {}", profile_name);
-        // println!("Using DynamoDB table: {}", table_name);
+        // println!("Using AWS profile: {}", config.aws_profile);
+        // println!("Using DynamoDB table: {}", config.dynamodb_table_name);
 
-        Ok(Self { client, table_name })
+        Ok(Self {
+            client,
+            table_name: config.dynamodb_table_name,
+        })
     }
 }
 
