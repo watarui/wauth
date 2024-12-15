@@ -2,5 +2,30 @@
 name = "wauth"
 version = "0.1.0"
 edition = "2021"
+publish = false
 
 [dependencies]
+anyhow = "1.0.94"
+async-trait = "0.1.83"
+aws-config = "1.5.10"
+aws-sdk-dynamodb = "1.55.0"
+base32 = "0.5.1"
+chrono = "0.4.39"
+clap = { version = "4.5.23", features = [
+    "color",
+    "error-context",
+    "help",
+    "suggestions",
+    "usage",
+    "cargo",
+    "derive",
+    "env",
+    "unicode",
+    "wrap_help",
+    "string",
+] }
+dotenvy = "0.15.7"
+hmac = "0.12.1"
+sha1 = "0.10.6"
+thiserror = "2.0.7"
+tokio = { version = "1.42.0", features = ["full", "test-util"] }
