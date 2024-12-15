@@ -29,11 +29,13 @@ impl TOTPApplication {
         if let Some(entry) = self.repository.get_secret(site_name).await? {
             let totp = Totp::new(entry.secret);
 
-            println!("WAUTH - TOTP Generator for {}", site_name);
-            println!("---------------------");
-
             if let Ok(code) = totp.generate_code() {
-                println!("Code: {} ({}s remaining)", code, Totp::remaining_seconds());
+                println!(
+                    "Token: {} ({}s remaining for {})",
+                    code,
+                    Totp::remaining_seconds(),
+                    site_name
+                );
             }
         } else {
             println!("No secret found for site: {}", site_name);
