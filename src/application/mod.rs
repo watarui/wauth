@@ -3,7 +3,7 @@ use crate::domain::totp::Totp;
 use crate::infrastructure::aws::DynamoDBRepository;
 
 pub struct TOTPApplication {
-    repository: DynamoDBRepository,
+    pub repository: DynamoDBRepository,
 }
 
 impl TOTPApplication {
